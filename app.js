@@ -22,7 +22,7 @@ app.use(
     extended: false
   })
 );
-server.listen(4000, function () {
+server.listen(process.env.PORT || 4000, function () {
   console.log("Connecté sur le port 4000")
 });
 app.use(bodyParser.json());
@@ -36,7 +36,7 @@ app.use(session({
     secure: false
   },
   store: new MongoStore({
-    url: 'mongodb://localhost:27017/exo1',
+    url: 'mongodb://pierreV:bonde007mLab@ds115543.mlab.com:15543/projet2_db',
     ttl: 30 * 60
   })
 }));

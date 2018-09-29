@@ -13,7 +13,9 @@ block content
     'use strict';
     window.addEventListener('DOMContentLoaded', function () {
       // var websocketConnection = io("http://192.168.105.57:3000"); ///////// - 1 - /////////
-      var websocketConnection = io("http://localhost:4000");
+      //- var websocketConnection = io("http://localhost:4000");
+      //- ###   process.env.PORT   ###
+      var websocketConnection = io();
       var start = false;
       var value = 3;
       var time = false;

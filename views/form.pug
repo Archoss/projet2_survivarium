@@ -1,0 +1,35 @@
+extends layout
+
+block content
+    nav
+        a(href="/" class="lien") Retour au menu principal
+
+    h1= title
+
+    form.signUp_SignIn(action='/form' method='POST')
+        div.form-group
+            label(for='name') Nom
+            input#name.form-control(type='text', placeholder='Saisissez un nom' autocomplete='off', name='name', required)
+        div.form-group
+            label(for='password') Mot de passe
+            input#password.form-control(type='password', placeholder='Saisissez un mot de passe', autocomplete='off', name='password', required)
+        div.submit
+            input#submit(type="submit", value="Valider")
+            if error
+                p= message
+    script.
+        document.addEventListener("DOMContentLoaded", function(event) {
+            //- $( ".signUp_SignIn" ).click(function(e) {
+            //-     e.preventDefault();
+            //- })
+            console.log("DOM entièrement chargé et analysé");
+
+            $('#name').focusout(function() {
+                //- console.log($("#name").val());
+            })
+            $('#submit').click(function() {
+                //- console.log("Nom : ", $("#name").val());
+                //- console.log($("Password : ", "#passsword").val());
+
+            })
+        });

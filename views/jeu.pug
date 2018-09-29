@@ -1,0 +1,103 @@
+extends layout
+
+block content
+  nav
+    a(href="/" class="lien") Retour au menu principal
+  
+  h1 Welcome to #{title}
+  br
+  button(id="start" class="start") Start
+  p#status status
+
+  script.
+    'use strict';
+    window.addEventListener('DOMContentLoaded', function () {
+      // var websocketConnection = io("http://192.168.105.57:3000"); ///////// - 1 - /////////
+      var websocketConnection = io("http://localhost:4000");
+      var start = false;
+      var value = 3;
+      var time = false;
+      var startGame = window.document.getElementById('start');
+      var fond = document.getElementsByTagName('body')[0];
+      fond.style.transition = 'all, 1.5s';
+      var h1 = document.getElementsByTagName('h1')[0];
+      var login = document.getElementById('login');
+      var formSub = document.getElementById('formSub');
+      var formLog = document.getElementById('formLog');
+      var status = document.getElementById('status');
+
+      var password = document.getElementById('password');
+      var submitButton = document.getElementById('submitButton');
+      var user = {};
+
+      websocketConnection.on('message', function(message) {
+        alert("Server : " + message)
+      })
+
+      startGame.addEventListener('click', function (event) {
+        if (!start) {
+          console.log('Start');
+          //- console.log(event);
+          fond.innerHTML = "Ne meurt pas Blob !";
+          websocketConnection.emit('begin', "event");
+        } else {
+          startGame.innerHTML = "Donner de la vie";
+          // h1.style.display = "none";
+          // fond.style.background = 'white';
+          websocketConnection.emit('addTime');
+          time = true;
+          value = value + 3;
+          console.log(" + 3 secondes ");
+        }
+      });
+
+      websocketConnection.emit('begin', 
+        "event"
+    ); // [1]
+
+
+      const timeout = setInterval(function () {
+        if (time) {
+          value--;
+          websocketConnection.emit('timeTransform');
+          $("#status").html(value+" secondes");
+          console.log(value, " secondes ");
+        }
+        websocketConnection.emit('timeStatus');
+      }, 1000);
+
+
+      // - RECEPTION DE LA FORME DESSINEE -
+      websocketConnection.on('carreStatus', function (carre) {
+        start = true;
+        var carreElement = window.document.getElementById(carre.id);
+        // console.log(carre.id);
+        if (!carreElement) {
+            var carreElement = window.document.createElement('div');
+            carreElement.setAttribute("id", carre.id);
+            window.document.body.appendChild(carreElement);
+            // console.log("carre.id", carre.id);
+        }
+        carreElement.style.id = carre.id;
+        carreElement.style.backgroundColor = carre.backgroundColor;
+        carreElement.style.height = carre.height;
+        carreElement.style.width = carre.width;
+        carreElement.style.position = carre.position;
+        carreElement.style.top = carre.top;
+        carreElement.style.left = carre.left;
+        carreElement.style.padding = carre.padding;
+        carreElement.style.margin = carre.margin;
+        carreElement.style.borderRadius = carre.borderRadius;
+        carreElement.style.boxShadow = carre.boxShadow;
+        carreElement.style.transform = carre.rotate;
+        carreElement.style.transition = carre.transition;
+      });
+
+      websocketConnection.on('removecarre', function (carre) {
+        var carre = window.document.getElementById(carre.id);
+        if (carre) {
+          console.log('Game over !');
+          $("#status").html("GAME OVER");
+        }
+      });
+    })

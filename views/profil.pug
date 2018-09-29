@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h1 Profile
+    a(href="/jeu" class="lien") Jeu
+    article
+        span Nom : #{user.name}
+        span Password : #{user.password}
